@@ -11,13 +11,13 @@ template<typename T> void draw(const T&);
 
 struct object_t
 {
-  virtual draw() = 0;
+  virtual void draw() = 0;
   virtual ~object_t() {};
 };
 
 template<typename U> struct model_t : object_t
 {
-  std::unique_ptr<T> m_data;
+  std::unique_ptr<U> m_data;
   
   model_t(const U& data)
   : m_data{std::make_unique<U>(data)}
@@ -35,6 +35,12 @@ template<typename U> struct model_t : object_t
 // fully specialize the template function "template<typename T> void draw(const T&)" above
 // to handle any type you want.
 
+// for the object_t*
+template<> void draw(const obj_ptr& obj)
+{
+    obj->draw();
+}
+
 // for int
 template<> void draw(const int& i)
 {
@@ -46,7 +52,7 @@ template<> void draw(const double& d)
   std::cout << " drawing double = " << d << '\n';
 }
 // for string
-template<> void draw(const string& s)
+template<> void draw(const std::string& s)
 {
   std::cout << "drawing string = " << s << '\n';
 }
@@ -56,6 +62,6 @@ template<> void draw(const document_t& doc)
 {
   std::cout << "<document>\n";
   for (const auto& elmnt: doc)
-    elmnt->draw();
+    draw(elmnt);
   std::cout << "</document>\n";
 }
